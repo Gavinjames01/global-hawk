@@ -1,0 +1,16 @@
+{
+  "short_name": "CoinAlert",
+  "name": "Meme Coin & Wallet Tracker",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1216/1216895.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "display": "standalone",
+  "orientation": "portrait"
+}

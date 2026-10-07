@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Hawk | Social Trading & On-Chain Intelligence</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #07090e;
+            --bg-card: rgba(15, 18, 28, 0.85);
+            --border-card: rgba(255, 255, 255, 0.08);
+            --accent: #00f2fe;
+            --accent-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            --accent-dev: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+            --text-main: #f3f4f6;
+            --text-sub: #9ca3af;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.1) 0%, transparent 60%);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            padding: 24px 16px;
+            box-sizing: border-box;
+        }
+
+        .brand-header { text-align: center; margin-bottom: 24px; }
+        .brand-logo {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+        .brand-sub { font-size: 13px; color: var(--text-sub); }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        h3 { font-size: 18px; font-weight: 600; margin: 0 0 16px 0; color: var(--text-main); }
+        h4 { font-size: 14px; font-weight: 600; margin: 16px 0 8px 0; color: var(--accent); }
+
+        label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+
+        input, select, button, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-card);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #00f2fe;
+            box-shadow: 0 0 0 2px rgba(0, 242, 254, 0.2);
+        }
+
+        button {
+            background: var(--accent-gradient);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+
+        button:hover { opacity: 0.92; transform: translateY(-1px); }
+        .btn-secondary { background: rgba(255, 255, 255, 0.08); color: var(--text-main); border: 1px solid var(--border-card); }
+        .btn-danger { background: var(--danger); color: #fff; }
+
+        .toggle-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-card);
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--border-card);
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--text-sub);
+            padding: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 8px;
+            border: none;
+            margin: 0;
+            flex: 1;
+        }
+
+        .tab-btn.active { background: rgba(255, 255, 255, 0.1); color: var(--text-main); font-weight: 600; }
+        .hidden { display: none !important; }
+
+        .dev-badge {
+            display: inline-flex;
+            align-items: center;
+            background: var(--accent-dev);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            letter-spacing: 0.5px;
+            margin-left: 6px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 12px 0;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border-card);
+        }
+
+        .stat-value { font-size: 16px; font-weight: 700; color: var(--accent); }
+        .stat-label { font-size: 10px; color: var(--text-sub); margin-top: 2px; }
+
+        .console-log {
+            background: #000;
+            border: 1px solid #222;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 11px;
+            color: #00ff88;
+            height: 100px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .link-text { color: var(--accent); cursor: pointer; text-decoration: underline; font-size: 13px; }
+        .footer-actions { margin-top: 30px; text-align: center; display: flex; justify-content: center; gap: 16px; font-size: 12px; color: var(--text-sub); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="brand-header">
+            <div class="brand-logo">GLOBAL HAWK</div>
+            <div class="brand-sub">Social Trading & On-Chain Watchtower</div>
+        </div>
+
+        <!-- 1. SIGN UP PAGE (WITH DIRECT FOMO LINKING TOGGLE) -->
+        <div id="signup-page" class="card">
+            <h3>Create Account</h3>
+            
+            <div class="toggle-box">
+                <span>Link Existing Fomo Account directly</span>
+                <input type="checkbox" id="useFomoToggle" onchange="toggleFomoMode()" style="width:auto; margin:0;">
+            </div>
+
+            <div id="standard-signup-fields">
+                <label>Username</label>
+                <input type="text" id="regUsername" placeholder="WhiteHawk">
+
+                <label>Main Wallet Address (Solana / EVM)</label>
+                <input type="text" id="regWallet" placeholder="0x... or Solana Address">
+            </div>
+
+            <div id="fomo-signup-fields" class="hidden">
+                <label>Fomo Account Handle / Username</label>
+                <input type="text" id="fomoHandle" placeholder="@fomo_trader">
+            </div>
+
+            <label>Email Address</label>
+            <input type="email" id="regEmail" placeholder="trader@globalhawk.com">
+
+            <label>Password</label>
+            <input type="password" id="regPassword" placeholder="••••••••">
+
+            <label>Confirm Password</label>
+            <input type="password" id="regConfirmPassword" placeholder="••••••••">
+
+            <button onclick="handleRegister()">Register & Verify Email</button>
+            <div style="text-align: center; margin-top: 16px; font-size: 13px; color: var(--text-sub);">
+                Already registered? <span class="link-text" onclick="showAuthPage('login-page')">Log In</span>
+            </div>
+        </div>
+
+        <!-- 2. LOG IN PAGE -->
+        <div id="login-page" class="card hidden">
+            <h3>Account Sign In</h3>
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" placeholder="dev@globalhawk.com">
+
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••">
+
+            <button onclick="handleLogin()">Sign In</button>
+            <div style="text-align: center; margin-top: 16px; font-size: 13px; color: var(--text-sub);">
+                Need an account? <span class="link-text" onclick="showAuthPage('signup-page')">Create One</span>
+            </div>
+        </div>
+
+        <!-- 3. VERIFICATION PAGE -->
+        <div id="verify-notice-page" class="card hidden" style="text-align: center;">
+            <h3>📬 Email Verification Required</h3>
+            <p style="font-size: 13px; color: var(--text-sub); line-height: 1.5;">
+                We sent an activation link to your email. Click the link inside your inbox to access Global Hawk.
+            </p>
+            <button class="btn-secondary" onclick="checkVerificationStatus()">I Verified My Email</button>
+        </div>
+
+        <!-- 4. MAIN DASHBOARD -->
+        <div id="app-dashboard" class="hidden">
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchDashboardTab('create-tab', event)">Alerts</button>
+                <button class="tab-btn" onclick="switchDashboardTab('manage-tab', event)">Manage</button>
+                <button class="tab-btn" onclick="switchDashboardTab('watch-tab', event)">Watchlist</button>
+                <button class="tab-btn" onclick="switchDashboardTab('profile-tab', event)">Profile</button>
+            </div>
+
+            <!-- CREATE ALERT -->
+            <div id="create-tab" class="card tab-content">
+                <h3>📈 Create Alert Rule</h3>
+                <label>Chain ID</label>
+                <input type="text" id="chainId" value="solana">
+
+                <label>Contract Address (CA)</label>
+                <input type="text" id="tokenCA" placeholder="Paste Token CA">
+
+                <label>Drop Mode</label>
+                <select id="dropMode">
+                    <option value="initial">Initial Price Baseline</option>
+                    <option value="peak">Trailing Peak Baseline</option>
+                </select>
+
+                <label>Percentage Trigger</label>
+                <select id="percentChange">
+                    <option value="none">None</option>
+                    <option value="10">+10% Rise</option>
+                    <option value="25">+25% Rise</option>
+                    <option value="-10">-10% Drop</option>
+                    <option value="-25">-25% Drop</option>
+                </select>
+
+                <label>Dollar PnL Trigger</label>
+                <div style="display: flex; gap: 8px;">
+                    <select id="pnlDirection" style="width: 40%;">
+                        <option value="up">UP +$</option>
+                        <option value="down">DOWN -$</option>
+                    </select>
+                    <input type="number" id="pnlDollars" placeholder="50" style="width: 60%;">
+                </div>
+
+                <button onclick="saveAlertRule()">Arm Alert Rule</button>
+            </div>
+
+            <!-- MANAGE ALERTS -->
+            <div id="manage-tab" class="card tab-content hidden">
+                <h3>🔔 Saved Alert Rules</h3>
+                <div id="active-alerts-list"></div>
+            </div>
+
+            <!-- WATCHLIST -->
+            <div id="watch-tab" class="card tab-content hidden">
+                <h3>👀 Friend Watchlist</h3>
+                <label>Friend Username / Wallet / Fomo Handle</label>
+                <input type="text" id="watchIdentifier" placeholder="Username or 0x...">
+
+                <label>Token CA</label>
+                <input type="text" id="watchTokenCA" placeholder="Token Mint">
+
+                <label>Target Balance</label>
+                <input type="number" id="watchTarget" placeholder="Threshold">
+
+                <button onclick="saveWatchRule()">Arm Watcher</button>
+                <div id="watchlist-items" style="margin-top: 16px;"></div>
+            </div>
+
+            <!-- PROFILE HUB -->
+            <div id="profile-tab" class="card tab-content hidden">
+                <h3>👤 Member Profile</h3>
+                <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                    <span id="prof-username" style="font-size: 18px; font-weight: 700;">@WhiteHawk</span>
+                    <span id="prof-dev-badge" class="dev-badge hidden">🛠️ DEV TEAM</span>
+                </div>
+                <div id="prof-fomo-badge" style="font-size: 12px; color: var(--accent); margin-bottom: 8px;" class="hidden">Linked Fomo Account</div>
+                <div id="prof-email" style="font-size: 12px; color: var(--text-sub);">Email: -</div>
+
+                <div class="stat-grid">
+                    <div class="stat-card"><div class="stat-value" id="stat-followers">0</div><div class="stat-label">Followers</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-following">0</div><div class="stat-label">Following</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-alerts">0</div><div class="stat-label">Alerts</div></div>
+                </div>
+
+                <div id="dev-portal-link" class="hidden" style="margin-top: 15px;">
+                    <button class="btn-secondary" onclick="showDevPortal()">🛠️ Open Global Hawk Dev Portal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. DEVELOPER CONTROL PORTAL -->
+        <div id="dev-portal-page" class="card hidden">
+            <h3>🛠️ Global Hawk Dev Portal</h3>
+            
+            <h4>📊 Core User & Auth Intelligence</h4>
+            <div class="stat-grid">
+                <div class="stat-card"><div class="stat-value" id="dev-stat-users">0</div><div class="stat-label">Total Users</div></div>
+                <div class="stat-card"><div class="stat-value" id="dev-stat-unverified">0</div><div class="stat-label">Unverified</div></div>
+                <div class="stat-card"><div class="stat-value" id="dev-stat-devs">0</div><div class="stat-label">Dev Staff</div></div>
+            </div>
+
+            <h4>⚡ Rule Engine & Telemetry</h4>
+            <div class="stat-grid">
+                <div class="stat-card"><div class="stat-value" id="dev-stat-alerts">0</div><div class="stat-label">Price Rules</div></div>
+                <div class="stat-card"><div class="stat-value" id="dev-stat-watches">0</div><div class="stat-label">Watchlists</div></div>
+                <div class="stat-card"><div class="stat-value" id="dev-stat-loop">30s</div><div class="stat-label">Poll Frequency</div></div>
+            </div>
+
+            <h4>📡 System Health & Diagnostics</h4>
+            <div class="stat-grid">
+                <div class="stat-card"><div class="stat-value" style="color:#10b981;">99.9%</div><div class="stat-label">Uptime</div></div>
+                <div class="stat-card"><div class="stat-value" style="color:#10b981;">142ms</div><div class="stat-label">DexScreener</div></div>
+                <div class="stat-card"><div class="stat-value" style="color:#10b981;">ACTIVE</div><div class="stat-label">Push Engine</div></div>
+            </div>
+
+            <h4>🖥️ Real-time System Event Log</h4>
+            <div class="console-log" id="dev-log">
+                [SYSTEM] Global Hawk Dev Portal Initialized.<br>
+                [TELEMETRY] Monitoring DexScreener & RPC Node latency.<br>
+            </div>
+
+            <h4>🐛 Bug Queue</h4>
+            <div id="dev-bug-list" style="font-size: 12px; color: var(--text-sub); margin-bottom: 12px;">No active bugs reported.</div>
+
+            <button class="btn-secondary" onclick="exitDevPortal()">Back to Application</button>
+        </div>
+
+        <!-- 6. REPORT BUG MODAL -->
+        <div id="bug-report-card" class="card hidden">
+            <h3>🐛 Report Issue</h3>
+            <label>Bug Description</label>
+            <textarea id="bugText" style="width:100%; height:80px;"></textarea>
+            <button onclick="submitBugReport()">Submit Report</button>
+            <button class="btn-secondary" onclick="toggleBugModal(false)">Cancel</button>
+        </div>
+
+        <div class="footer-actions">
+            <span class="link-text" onclick="toggleBugModal(true)">Report Bug</span>
+            <span>•</span>
+            <span id="footer-status">Global Hawk Online</span>
+        </div>
+    </div>
+
+    <script>
+        window.currentUser = null;
+
+        function toggleFomoMode() {
+            const isFomo = document.getElementById('useFomoToggle').checked;
+            document.getElementById('standard-signup-fields').classList.toggle('hidden', isFomo);
+            document.getElementById('fomo-signup-fields').classList.toggle('hidden', !isFomo);
+        }
+
+        function showAuthPage(pageId) {
+            document.getElementById('signup-page').classList.add('hidden');
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        function switchDashboardTab(tabId, evt) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.remove('hidden');
+            if (evt && evt.target) evt.target.classList.add('active');
+        }
+
+        async function handleRegister() {
+            const isFomo = document.getElementById('useFomoToggle').checked;
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const confirmPassword = document.getElementById('regConfirmPassword').value.trim();
+
+            let username = document.getElementById('regUsername').value.trim();
+            let walletAddress = document.getElementById('regWallet').value.trim();
+            let fomoHandle = null;
+
+            if (isFomo) {
+                fomoHandle = document.getElementById('fomoHandle').value.trim();
+                if (!fomoHandle) return alert("Please enter your Fomo Handle.");
+                username = fomoHandle.replace('@', '');
+            } else {
+                if (!username) return alert("Please enter a username.");
+            }
+
+            if (!email || !password || !confirmPassword) return alert("Fill all fields.");
+            if (password !== confirmPassword) return alert("Passwords do not match.");
+
+            const res = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password, walletAddress, isFomo, fomoHandle })
+            });
+
+            const data = await res.json();
+            if (!res.ok) return alert(data.error || "Registration failed.");
+
+            window.currentUser = data.user;
+            document.getElementById('signup-page').classList.add('hidden');
+            document.getElementById('verify-notice-page').classList.remove('hidden');
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+            if (!res.ok) return alert(data.error || "Login failed.");
+
+            window.currentUser = data.user;
+
+            if (!data.user.isVerified) {
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('verify-notice-page').classList.remove('hidden');
+                return;
+            }
+
+            unlockDashboard();
+        }
+
+        async function checkVerificationStatus() {
+            if (!window.currentUser) return showAuthPage('login-page');
+            const res = await fetch(`/api/auth/status/${window.currentUser.id}`);
+            const data = await res.json();
+
+            if (data.isVerified) {
+                window.currentUser.isVerified = true;
+                unlockDashboard();
+            } else {
+                alert("Email not verified yet.");
+            }
+        }
+
+        function unlockDashboard() {
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('signup-page').classList.add('hidden');
+            document.getElementById('verify-notice-page').classList.add('hidden');
+            document.getElementById('app-dashboard').classList.remove('hidden');
+
+            document.getElementById('prof-username').innerText = '@' + currentUser.username;
+            document.getElementById('prof-email').innerText = 'Email: ' + currentUser.email;
+
+            if (currentUser.isFomo) {
+                document.getElementById('prof-fomo-badge').classList.remove('hidden');
+            }
+
+            if (currentUser.isDeveloper) {
+                document.getElementById('prof-dev-badge').classList.remove('hidden');
+                document.getElementById('dev-portal-link').classList.remove('hidden');
+            }
+        }
+
+        async function showDevPortal() {
+            const res = await fetch(`/api/dev/stats?userId=${currentUser.id}`);
+            if (!res.ok) return alert("Access denied. Developer privileges required.");
+            const data = await res.json();
+
+            document.getElementById('dev-stat-users').innerText = data.totalUsers;
+            document.getElementById('dev-stat-unverified').innerText = data.unverifiedUsers;
+            document.getElementById('dev-stat-devs').innerText = data.devCount;
+            document.getElementById('dev-stat-alerts').innerText = data.activeAlertsCount;
+            document.getElementById('dev-stat-watches').innerText = data.activeWatchlistsCount;
+
+            const bugList = document.getElementById('dev-bug-list');
+            if (data.bugs.length === 0) {
+                bugList.innerText = "No active bugs reported.";
+            } else {
+                bugList.innerHTML = data.bugs.map(b => `<div style="background:rgba(255,255,255,0.04); padding:8px; border-radius:6px; margin-bottom:6px;"><strong>${b.userId}:</strong> ${b.text}</div>`).join('');
+            }
+
+            document.getElementById('app-dashboard').classList.add('hidden');
+            document.getElementById('dev-portal-page').classList.remove('hidden');
+        }
+
+        function exitDevPortal() {
+            document.getElementById('dev-portal-page').classList.add('hidden');
+            document.getElementById('app-dashboard').classList.remove('hidden');
+        }
+
+        function toggleBugModal(show) {
+            document.getElementById('bug-report-card').classList.toggle('hidden', !show);
+        }
+
+        async function submitBugReport() {
+            const text = document.getElementById('bugText').value.trim();
+            if (!text) return;
+
+            await fetch('/api/bugs/report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: window.currentUser ? window.currentUser.id : 'anonymous', text })
+            });
+
+            alert("Bug report submitted to Developer Console!");
+            document.getElementById('bugText').value = '';
+            toggleBugModal(false);
+        }
+    </script>
+</body>
+</html>
